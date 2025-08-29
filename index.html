@@ -1,491 +1,333 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$WET - The Most Memeable Memecoin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-dark: #001E15;
-            --bg-medium: #245042;
-            --primary-color: #4a9d83;
-            --accent-color: #5fb89e;
-            --text-light: #e8f5f0;
-            --text-white: #ffffff;
-            --shadow-dark: rgba(0, 0, 0, 0.4);
-        }
-
-        body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
-        }
-
-        /* Fondo animado con burbujas */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
-            overflow: hidden;
-        }
-
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(74, 157, 131, 0.1), rgba(74, 157, 131, 0.05));
-            animation: float 20s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(100vh) translateX(0) scale(0);
-            }
-            10% {
-                transform: translateY(90vh) translateX(10px) scale(1);
-            }
-            50% {
-                transform: translateY(-10vh) translateX(-20px) scale(1.2);
-            }
-            90% {
-                transform: translateY(10vh) translateX(20px) scale(0.8);
-            }
-        }
-
-        /* Ondas de agua animadas */
-        .wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%234a9d83" opacity="0.3"></path></svg>') repeat-x;
-            animation: wave 10s linear infinite;
-        }
-
-        @keyframes wave {
-            0% { background-position-x: 0; }
-            100% { background-position-x: 1200px; }
-        }
-
-        /* Navegación */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(26, 77, 62, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
-            z-index: 1000;
-            box-shadow: 0 2px 20px var(--shadow-dark);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--accent-color);
-            text-decoration: none;
-            transition: transform 0.3s;
-        }
-
-        .logo:hover {
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        .logo img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .buy-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(74, 157, 131, 0.3);
-        }
-
-        .buy-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(74, 157, 131, 0.5);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 120px 5% 80px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .hero-text h1 {
-            font-size: 5rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            text-shadow: 3px 3px 0 var(--shadow-dark);
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from { text-shadow: 3px 3px 0 var(--shadow-dark), 0 0 10px var(--primary-color); }
-            to { text-shadow: 3px 3px 0 var(--shadow-dark), 0 0 20px var(--accent-color), 0 0 30px var(--accent-color); }
-        }
-
-        .hero-text p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .wet-image {
-            width: 100%;
-            max-width: 500px;
-            height: auto;
-            animation: float-wet 3s ease-in-out infinite;
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
-        }
-
-        @keyframes float-wet {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-20px) rotate(-5deg); }
-            75% { transform: translateY(-20px) rotate(5deg); }
-        }
-
-        /* Social Links */
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .social-links a {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: white;
-            font-size: 1.5rem;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px var(--shadow-dark);
-        }
-
-        .social-links a:hover {
-            transform: translateY(-5px) rotate(360deg);
-            background: var(--accent-color);
-            box-shadow: 0 6px 20px var(--shadow-dark);
-        }
-
-        /* Exchange Section */
-        .exchanges {
-            padding: 80px 5%;
-            background: rgba(42, 109, 94, 0.3);
-        }
-
-        .exchanges h2 {
-            text-align: center;
-            font-size: 3rem;
-            margin-bottom: 3rem;
-            color: var(--accent-color);
-        }
-
-        .exchange-grid {
-            display: flex;
-            justify-content: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .exchange-card {
-            background: rgba(74, 157, 131, 0.1);
-            border: 2px solid var(--primary-color);
-            border-radius: 20px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s;
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--text-light);
-        }
-
-        .exchange-card:hover {
-            transform: translateY(-10px);
-            background: rgba(74, 157, 131, 0.2);
-            box-shadow: 0 10px 30px rgba(74, 157, 131, 0.3);
-        }
-
-        .exchange-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
-        }
-
-        .exchange-logo {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 1rem;
-        }
-
-        /* Tokenomics */
-        .tokenomics {
-            padding: 80px 5%;
-            text-align: center;
-        }
-
-        .tokenomics h2 {
-            font-size: 3rem;
-            margin-bottom: 3rem;
-            color: var(--accent-color);
-        }
-
-        .token-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(74, 157, 131, 0.1), rgba(95, 184, 158, 0.1));
-            border-radius: 20px;
-            padding: 2rem;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: scale(1.05);
-        }
-
-        .stat-card h3 {
-            color: var(--accent-color);
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card p {
-            font-size: 1.2rem;
-        }
-
-        /* Footer */
-        footer {
-            padding: 2rem 5%;
-            text-align: center;
-            background: rgba(26, 77, 62, 0.5);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            
-            .hero-text h1 {
-                font-size: 3rem;
-            }
-            
-            .hero-text p {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$WET - The Most Memeable Memecoin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-dark: #001710;
+      --bg-medium: #001710;
+      --primary-color: #4a9d83;
+      --accent-color: #5fb89e;
+      --frog-skin: #5BA59F;
+      --text-light: #e8f5f0;
+      --text-white: #ffffff;
+      --shadow-dark: rgba(0,0,0,0.4);
+    }
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+    /* Fondo animado */
+    .animated-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+      overflow: hidden;
+    }
+    .bubble { position:absolute; border-radius:50%; background: radial-gradient(circle, rgba(74,157,131,0.04), rgba(74,157,131,0.02)); animation: float 20s infinite ease-in-out; }
+    @keyframes float { 0%,100%{transform:translateY(100vh) translateX(0) scale(0);} 10%{transform:translateY(90vh) translateX(10px) scale(1);} 50%{transform:translateY(-10vh) translateX(-20px) scale(1.2);} 90%{transform:translateY(10vh) translateX(20px) scale(0.8);} }
+    /* Foco suave + ondas */
+    .cursor-light { position: fixed; inset: 0; pointer-events: none; --mx:-9999px; --my:-9999px; background: radial-gradient(circle 140px at var(--mx) var(--my), rgba(95,184,158,0.03), transparent 60%); mix-blend-mode: screen; will-change: background-position; }
+    .ripple { position: fixed; width:12px; height:12px; border-radius:50%; pointer-events:none; background: radial-gradient(circle, rgba(95,184,158,0.06) 0, rgba(95,184,158,0.03) 35%, transparent 70%); mix-blend-mode: screen; transform: translate(var(--x), var(--y)) scale(1); opacity:.5; filter: blur(.6px); animation: ripple 1200ms ease-out forwards; }
+    @keyframes ripple { to { transform: translate(var(--x), var(--y)) scale(12); opacity: 0; } }
+    /* Ondas de agua al pie */
+    .wave { position:absolute; bottom:0; left:0; width:100%; height:100px; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%234a9d83" opacity="0.3"></path></svg>') repeat-x; animation: wave 10s linear infinite; }
+    @keyframes wave { 0%{background-position-x:0;} 100%{background-position-x:1200px;} }
+    /* NAV */
+    nav { position: fixed; top:0; width:100%; background:#041812; backdrop-filter: blur(10px); padding:1rem 5%; z-index:1000; box-shadow:0 2px 20px var(--shadow-dark); }
+    .nav-container { display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; }
+    .logo { display:flex; align-items:center; gap:10px; font-size:2rem; font-weight:bold; color:var(--frog-skin); text-decoration:none; transition: transform .3s; }
+    .logo:hover { transform: scale(1.1) rotate(-5deg); }
+    .logo img { width:50px; height:50px; border-radius:50%; animation: bounce 2s infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+    .nav-links { display:flex; gap:2rem; list-style:none; align-items: center; }
+    .nav-links a { color:var(--text-light); text-decoration:none; font-size:1.1rem; transition:all .3s; position:relative; }
+    .nav-links a:hover { color:var(--accent-color); transform: translateY(-2px); }
+    .nav-links a::after { content:''; position:absolute; bottom:-5px; left:0; width:0; height:2px; background:var(--accent-color); transition: width .3s; }
+    .nav-links a:hover::after { width:100%; }
+    
+    /* Language Selector */
+    .lang-selector {
+      position: relative;
+      display: inline-block;
+      margin-left: 2rem;
+    }
+    .lang-btn {
+      background: var(--frog-skin);
+      border: 1px solid var(--frog-skin);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: bold;
+    }
+    .lang-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(91, 165, 159, 0.3);
+    }
+    .lang-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      background: #041812;
+      border: 1px solid var(--frog-skin);
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .lang-dropdown.active {
+      display: block;
+    }
+    .lang-option {
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: block;
+      color: var(--text-light);
+      text-decoration: none;
+    }
+    .lang-option:hover {
+      background: var(--frog-skin);
+      color: #fff;
+    }
+    
+    .buy-btn { background: var(--frog-skin); color:#fff; padding:.8rem 2rem; border-radius:50px; text-decoration:none; font-weight:bold; transition: all .3s; box-shadow:0 4px 15px rgba(74,157,131,.3); }
+    .buy-btn:hover { transform: scale(1.05); box-shadow:0 6px 25px rgba(74,157,131,.5); }
+    /* Hero */
+    .hero { padding:120px 5% 80px; min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; }
+    .hero-content { max-width:1200px; display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center; }
+    .hero-text h1 { font-size:5rem; color:var(--frog-skin); margin-bottom:1rem; text-shadow:3px 3px 0 var(--shadow-dark); animation: glow 2s ease-in-out infinite alternate; }
+    @keyframes glow { from{ text-shadow:3px 3px 0 var(--shadow-dark), 0 0 10px var(--frog-skin);} to{ text-shadow:3px 3px 0 var(--shadow-dark), 0 0 20px var(--frog-skin), 0 0 30px var(--frog-skin);} }
+    .hero-text p { font-size:1.5rem; margin-bottom:2rem; line-height:1.6; }
+    .wet-image { width:100%; max-width:500px; height:auto; animation: float-wet 3s ease-in-out infinite; filter: drop-shadow(0 10px 30px rgba(0,0,0,.3)); }
+    @keyframes float-wet { 0%,100%{transform:translateY(0) rotate(0);} 25%{transform:translateY(-20px) rotate(-5deg);} 75%{transform:translateY(-20px) rotate(5deg);} }
+    /* Social */
+    .social-links { display:flex; gap:1rem; margin-top:2rem; }
+    .social-links a { width:50px; height:50px; border-radius:50%; background: var(--frog-skin); display:flex; align-items:center; justify-content:center; text-decoration:none; color:#fff; font-size:1.5rem; transition:all .3s; box-shadow:0 4px 10px var(--shadow-dark); overflow: hidden; }
+    .social-links a img { max-width: 24px; max-height: 24px; object-fit: contain; }
+    .social-links a:hover { transform: translateY(-5px) rotate(360deg); background: var(--frog-skin); box-shadow:0 6px 20px var(--shadow-dark); }
+    /* Exchanges */
+    .exchanges { padding:80px 5%; background: rgba(0, 23, 16, 0.25); }
+    .exchanges h2 { text-align:center; font-size:3rem; margin-bottom:3rem; color:var(--accent-color); }
+    .exchange-grid { display:flex; justify-content:center; max-width:960px; margin:0 auto; }
+    .exchange-card { background: rgba(74,157,131,0.1); border:2px solid var(--primary-color); border-radius:24px; padding:2.5rem; min-width:320px; min-height:200px; display:flex; flex-direction: column; align-items:center; justify-content:center; text-align:center; transition:all .3s; cursor:pointer; text-decoration:none; color:var(--text-light); }
+    .exchange-card:hover { transform: translateY(-10px); background: rgba(74,157,131,0.2); box-shadow:0 10px 30px rgba(74,157,131,0.3); }
+    .exchange-card h3 { font-size:1.5rem; margin-top:1rem; color:var(--accent-color); }
+    /* Tokenomics */
+    .tokenomics { padding:80px 5%; text-align:center; }
+    .tokenomics h2 { font-size:3rem; margin-bottom:3rem; color:var(--accent-color); }
+    /* Footer */
+    footer { padding:2rem 5%; text-align:center; background:#001710; }
+    /* Responsive */
+    @media (max-width:768px){
+      .nav-links{ display:none; }
+      .hero-content{ grid-template-columns:1fr; text-align:center; }
+      .hero-text h1{ font-size:3rem; }
+      .hero-text p{ font-size:1.2rem; }
+      .lang-selector { position: fixed; top: 70px; right: 20px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Fondo animado -->
-    <div class="animated-bg">
-        <div class="bubble" style="width: 80px; height: 80px; left: 10%; animation-delay: 0s;"></div>
-        <div class="bubble" style="width: 60px; height: 60px; left: 20%; animation-delay: 2s;"></div>
-        <div class="bubble" style="width: 100px; height: 100px; left: 35%; animation-delay: 4s;"></div>
-        <div class="bubble" style="width: 40px; height: 40px; left: 50%; animation-delay: 1s;"></div>
-        <div class="bubble" style="width: 70px; height: 70px; left: 65%; animation-delay: 3s;"></div>
-        <div class="bubble" style="width: 90px; height: 90px; left: 80%; animation-delay: 5s;"></div>
-        <div class="bubble" style="width: 50px; height: 50px; left: 90%; animation-delay: 2.5s;"></div>
-        <div class="wave"></div>
+  <!-- Fondo animado -->
+  <div class="animated-bg">
+    <div class="bubble" style="width:80px;height:128px;left:10%;animation-delay:0s;"></div>
+    <div class="bubble" style="width:60px;height:60px;left:20%;animation-delay:2s;"></div>
+    <div class="bubble" style="width:100px;height:100px;left:35%;animation-delay:4s;"></div>
+    <div class="bubble" style="width:40px;height:40px;left:50%;animation-delay:1s;"></div>
+    <div class="bubble" style="width:70px;height:70px;left:65%;animation-delay:3s;"></div>
+    <div class="bubble" style="width:90px;height:90px;left:80%;animation-delay:5s;"></div>
+    <div class="bubble" style="width:50px;height:50px;left:90%;animation-delay:2.5s;"></div>
+    <div class="wave"></div>
+  </div>
+  <div class="cursor-light" id="cursor-light"></div>
+  <!-- Navegación -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <img src="wet-character.png" alt="WET Logo" id="logo-img" />
+        $WET
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home" data-lang="nav-home">Home</a></li>
+        <li><a href="https://www.hyperliquid.magpiexyz.io/meme/0x50be36a4bee4d74963128e2c26356e9c0c22fefe" target="_blank" rel="noopener" data-lang="nav-how">How to Buy</a></li>
+        <li><a href="#tokenomics" data-lang="nav-tokenomics">Tokenomics</a></li>
+        <li>
+          <div class="lang-selector">
+            <button class="lang-btn" onclick="toggleLangDropdown()">
+              <span id="current-lang">🇬🇧 EN</span>
+              <span>▼</span>
+            </button>
+            <div class="lang-dropdown" id="lang-dropdown">
+              <a class="lang-option" onclick="changeLanguage('en')">🇬🇧 English</a>
+              <a class="lang-option" onclick="changeLanguage('es')">🇪🇸 Español</a>
+              <a class="lang-option" onclick="changeLanguage('zh')">🇨🇳 中文</a>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <a href="#" class="buy-btn" data-lang="buy-btn">Buy Now</a>
     </div>
-
-    <!-- Navegación -->
-    <nav>
-        <div class="nav-container">
-            <a href="#" class="logo">
-                <img src="wet-logo.png" alt="WET Logo" id="logo-img">
-                $WET
-            </a>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#buy">How to Buy</a></li>
-                <li><a href="#bridge">Bridge</a></li>
-                <li><a href="#tokenomics">Tokenomics</a></li>
-                <li><a href="#roadmap">Roadmap</a></li>
-            </ul>
-            <a href="#" class="buy-btn">Buy Now</a>
+  </nav>
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>$WET</h1>
+        <p data-lang="hero-description">WET emerged from the deepest pools of Hyperliquid, a distinguished member of the regal Web3 frog lineage. Nurtured by the immense liquidity of its environment, WET evolved into a sleek, adaptive frog built for high leaps.</p>
+        <div class="social-links">
+          <a href="https://x.com/WFE1027510" target="_blank" rel="noopener" title="X (Twitter)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <a href="https://t.me/WET_Community" target="_blank" rel="noopener" title="Telegram">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+            </svg>
+          </a>
         </div>
-    </nav>
+      </div>
+      <div class="hero-image">
+        <img src="wet-character.png" alt="WET Character" class="wet-image" id="wet-img" />
+      </div>
+    </div>
+  </section>
+  <!-- Exchanges -->
+  <section class="exchanges" id="buy">
+    <h2 data-lang="available-on">Available On</h2>
+    <div class="exchange-grid">
+      <a href="#" class="exchange-card">
+        <img src="hyperpie-logo.png" alt="Hyperpie Logo" style="width:auto;height:80px;object-fit:contain;" />
+        <h3>The Hyperpie Bonding Curve</h3>
+      </a>
+    </div>
+  </section>
+  <!-- Tokenomics -->
+  <section class="tokenomics" id="tokenomics">
+    <h2 data-lang="total-supply">1,000,000,000 TOTAL SUPPLY</h2>
+  </section>
+  <!-- Footer -->
+  <footer>
+    <p data-lang="footer-text">&copy; 2025 $WET. All rights reserved. | Keeping the humidity high on HyperEVM…</p>
+  </footer>
+  <script>
+    // Traducciones
+    const translations = {
+      en: {
+        'nav-home': 'Home',
+        'nav-how': 'How to Buy',
+        'nav-tokenomics': 'Tokenomics',
+        'buy-btn': 'Buy Now',
+        'hero-description': 'WET emerged from the deepest pools of Hyperliquid, a distinguished member of the regal Web3 frog lineage. Nurtured by the immense liquidity of its environment, WET evolved into a sleek, adaptive frog built for high leaps.',
+        'available-on': 'Available On',
+        'total-supply': '1,000,000,000 TOTAL SUPPLY',
+        'footer-text': '© 2025 $WET. All rights reserved. | Keeping the humidity high on HyperEVM…'
+      },
+      es: {
+        'nav-home': 'Inicio',
+        'nav-how': 'Cómo Comprar',
+        'nav-tokenomics': 'Tokenomics',
+        'buy-btn': 'Comprar Ahora',
+        'hero-description': 'WET emergió de las piscinas más profundas de Hyperliquid, un distinguido miembro del linaje real de ranas Web3. Nutrido por la inmensa liquidez de su entorno, WET evolucionó en una rana elegante y adaptable construida para grandes saltos.',
+        'available-on': 'Disponible En',
+        'total-supply': '1,000,000,000 SUMINISTRO TOTAL',
+        'footer-text': '© 2025 $WET. Todos los derechos reservados. | Manteniendo la humedad alta en HyperEVM…'
+      },
+      zh: {
+        'nav-home': '首页',
+        'nav-how': '如何购买',
+        'nav-tokenomics': '代币经济学',
+        'buy-btn': '立即购买',
+        'hero-description': 'WET从Hyperliquid最深的池中诞生，是尊贵的Web3青蛙血统的杰出成员。在其环境的巨大流动性滋养下，WET进化成一只为高跳而生的灵活适应性青蛙。',
+        'available-on': '可在以下平台获取',
+        'total-supply': '10亿总供应量',
+        'footer-text': '© 2025 $WET. 版权所有。| 在HyperEVM上保持高湿度…'
+      }
+    };
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1>$WET</h1>
-                <p>The most memeable memecoin in existence. The dogs have had their day, it's time for WET to make waves.</p>
-                
-                <div class="social-links">
-                    <a href="#" title="Twitter">🐦</a>
-                    <a href="#" title="Telegram">💬</a>
-                    <a href="#" title="Discord">🎮</a>
-                    <a href="#" title="Reddit">🔴</a>
-                </div>
-            </div>
-            
-            <div class="hero-image">
-                <img src="wet-character.png" alt="WET Character" class="wet-image" id="wet-img">
-            </div>
-        </div>
-    </section>
+    let currentLanguage = 'en';
 
-    <!-- Exchanges -->
-    <section class="exchanges" id="buy">
-        <h2>Available On</h2>
-        <div class="exchange-grid">
-            <a href="#" class="exchange-card">
-                <img src="hyperpie-logo.png" alt="Hyperpie Logo" style="width: auto; height: 80px; margin: 0 auto 1rem; display: block; object-fit: contain;">
-                <h3>The Hyperpie Bonding Curve</h3>
-            </a>
-        </div>
-    </section>
+    function toggleLangDropdown() {
+      const dropdown = document.getElementById('lang-dropdown');
+      dropdown.classList.toggle('active');
+    }
 
-    <!-- Tokenomics -->
-    <section class="tokenomics" id="tokenomics">
-        <h2>Tokenomics</h2>
-        <div class="token-stats">
-            <div class="stat-card">
-                <h3>1.000.000.000</h3>
-                <p>Total Supply</p>
-            </div>
-            <div class="stat-card">
-                <h3>100%</h3>
-                <p>Community Driven</p>
-            </div>
-        </div>
-    </section>
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      const elements = document.querySelectorAll('[data-lang]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-lang');
+        if (translations[lang][key]) {
+          element.textContent = translations[lang][key];
+        }
+      });
+      
+      // Update language button
+      const langBtn = document.getElementById('current-lang');
+      const langFlags = {
+        'en': '🇬🇧 EN',
+        'es': '🇪🇸 ES',
+        'zh': '🇨🇳 中文'
+      };
+      langBtn.textContent = langFlags[lang];
+      
+      // Update HTML lang attribute
+      document.documentElement.lang = lang;
+      
+      // Close dropdown
+      document.getElementById('lang-dropdown').classList.remove('active');
+    }
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 $WET. All rights reserved. | Keeping the humidity high on HyperEVM…</p>
-    </footer>
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const langSelector = document.querySelector('.lang-selector');
+      if (!langSelector.contains(e.target)) {
+        document.getElementById('lang-dropdown').classList.remove('active');
+      }
+    });
 
-    <script>
-        // Agregar efecto de agua al mover el mouse
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            document.querySelector('.animated-bg').style.background = `
-                radial-gradient(circle at ${x * 100}% ${y * 100}%, 
-                rgba(74, 157, 131, 0.2), 
-                var(--bg-dark))
-            `;
-        });
-
-        // Usar las imágenes desde GitHub
-        document.getElementById('logo-img').src = 'wet-character.png';
-        document.getElementById('wet-img').src = 'wet-character.png';
-
-        // Animación de scroll suave
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-    </script>
+    // Spotlight suave + ondas (WET)
+    const cursorLight = document.getElementById('cursor-light');
+    let lastRipple = 0;
+    const canRipple = window.matchMedia('(pointer:fine)').matches;
+    document.addEventListener('mousemove', (e) => {
+      cursorLight.style.setProperty('--mx', e.clientX + 'px');
+      cursorLight.style.setProperty('--my', e.clientY + 'px');
+      const now = performance.now();
+      if (!canRipple || now - lastRipple < 120) return;
+      lastRipple = now;
+      const r = document.createElement('span');
+      r.className = 'ripple';
+      r.style.setProperty('--x', (e.clientX - 6) + 'px');
+      r.style.setProperty('--y', (e.clientY - 6) + 'px');
+      document.body.appendChild(r);
+      r.addEventListener('animationend', () => r.remove());
+    });
+    // Usar las imágenes desde GitHub
+    document.getElementById('logo-img').src = 'wet-character.png';
+    document.getElementById('wet-img').src = 'wet-character.png';
+    // Scroll suave
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
 </body>
 </html>
